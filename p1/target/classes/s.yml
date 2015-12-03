@@ -1,0 +1,1504 @@
+
+swagger: '2.0'
+info:
+ version: "1.0"
+ title: "WSO2 Machine Learner API"
+ description: |
+   This document specifies a **RESTful API** for WSO2 **API Machine Learner API**.
+   It was written with [swagger 2](http://swagger.io/).
+   **User Name and Password**
+
+   * User Name: `admin`
+
+   * Password: `admin`
+ contact:
+   name: "WSO2"
+   url: "http://wso2.com/products/machine-learner"
+  # email: "wso2.com"
+ license:
+   name: "Apache 2.0"
+   url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+# The domain of the API
+host: localhost:9443
+# The base path of the API.
+# Will be prefixed to all paths.
+basePath: /api
+
+# The schemes supported by the API
+schemes:
+ - https
+
+securityDefinitions:
+  basicAuth:
+   type: basic
+   description: HTTP Basic Authentication. Works over `HTTP` and `HTTPS`
+
+#The available paths and operations for the API.
+paths:
+
+#Retrieves a list of DAS tables from wso2 DAS
+ /configs/das-tables:
+  get:
+   summary: Retrieve list of DAS table names
+   description: Retrieve a list of DAS tables from wso2 data analytic server(DAS)
+
+   security:
+    - basicAuth: []
+
+   responses:
+    200:
+     description: ok
+    500:
+     description: Internal servar error
+
+
+#Retrivving all algorithms
+ /configs/algorithms:
+   get:
+     description: Receives a list algorithms
+
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+
+#Retrieving an algorithm via REST API
+ /configs/algorithms/{algorithm-name}:
+   get:
+     summary: Retrieves an algorithm
+     description: Retrieves an algorithm via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       404:
+         description: Not Found
+     parameters:
+       - name: algorithm-name
+         in: path
+         description: Name of the algorithm which is needed to be retrieved
+         required: true
+         type: string
+
+#Retrieving hyper parameters of an algorithm via REST API
+ /configs/algorithms/{algorithm-name}/hyper-params:
+   get:
+     summary: Retrieves hyper-params
+     description: Retrieves hyper paramethers of an algorithm via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       404:
+         description: Not Found
+     parameters:
+       - name: algorithm-name
+         in: path
+         description: Name of the algorithm of which, hyper params should be received
+         required: true
+         type: string
+
+#Retrieving Summary Statistics Settings via REST API
+ /configs/summary-stat-settings:
+   get:
+     summary: Retrieves summary stat settings
+     description: Retrieves summry statistic settingsvia REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+#Uploading a Dataset via REST API
+ /datasets:
+   get:
+     summary: Retrieves all datasets
+     description: Retrieves all datasets via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+   post:
+     summary: Uploads a dataset
+     description: Uploads a dataset via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal server error
+     parameters:
+       - name: dataset-name
+         in: formData
+         description: A unique name for the dataset
+         required: true
+         type: string
+
+       - name: source-type
+         in: formData
+         description: Storage type of the source of the dataset (file/HDFS/WSO2 DAS)
+         required: true
+         type: string
+
+       - name: source-path
+         in: formData
+         description: Format depends on the source-type
+         required: false
+         type: string
+
+       - name: destination
+         in: formData
+         description: Storage type of the server side copy of the dataset (file/HDFS)
+         required: true
+         type: string
+
+       - name: data-format
+         in: formData
+         description: Format of the dataset (CSV/TSV)
+         required: true
+         type: string
+
+       - name: contains-header
+         in: formData
+         description: Whether the dataset contains a header row or not
+         required: true
+         type: boolean
+
+       - name: version
+         in: formData
+         description:  Version of the dataset
+         required: true
+         type: string
+
+       - name: file
+         in: formData
+         description: Path to dataset file, if source type is file
+         required: false
+         type: file
+
+       - name: description
+         in: formData
+         description:  Description about the dataset.
+         required: false
+         type: string
+
+
+
+#Retrieving all datasets and their versions via REST API
+ /datasets/versions:
+   get:
+     summary: Retrieves all datasets and their versions
+     description: Retrieves all datasets and their versions for a given user via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+#Retrieving a dataset via REST API
+ /datasets/{dataset-id}:
+   get:
+     summary: Retrieves a dataset
+     description: Retrieves a dataset of a given dataset id via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which is needed to be retrieved
+         required: true
+         type: integer
+
+#Retrieving all version sets  of a dataset via REST API
+ /datasets/{dataset-id}/versions:
+   get:
+     summary: Retrieves versions of a dataset
+     description: Retrieves all version sets  of a dataset via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which is needed to be retrieved
+         required: true
+         type: integer
+
+#Retrieving version set ID of a given dataset version
+ /datasets/{dataset-id}/versions/{version}:
+   get:
+     summary: Retrieves version set ID
+     description: Retrieves vetsion set ID of a given dataset version
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which is needed to be retrieved
+         required: true
+         type: integer
+       - name: version
+         in: path
+         description: version of the dataset which is needed to be retrieved
+         required: true
+         type: string
+
+#Retrieving dataset status of a given dataset via REST API
+ /datasets/{dataset-id}/status:
+   get:
+     summary: Retrieves status of dataset
+     description: Retrieves dataset status of a given dataset via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which is needed to be retrieved
+         required: true
+         type: integer
+
+#Retrieving dataset version via REST API
+ /datasets/versions/{versionset-id}:
+   get:
+     summary: Retrieves a datset version
+     description: Retrieves a dataset version via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: versionset-id
+         in: path
+         description: ID of the version set which is needed to be retrieved
+         required: true
+         type: integer
+
+#Retrieving sample points of a given dataset version
+ /datasets/versions/{versionset-id}/sample-points:
+   get:
+     summary: Retrieves sample points
+     description: Retrieves sample points of a given dataset version
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: versionset-id
+         in: path
+         description: ID of the version set of which you need to retrieve sample points
+         required: true
+         type: integer
+
+#Retrieving scatter plot points of the latest dataset version via REST API
+ /datasets/{dataset-id}/scatter-plot-points:
+   post:
+     summary: Retrieves scatter plot points
+     description: Retrieves scatter plot points of the latest dataset version via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the data set which is needed to be retrieved
+         required: true
+         type: integer
+
+#Retrieving scatter plot points of a dataset version
+ /datasets/versions/{versionset-id}/scatter-plot-points:
+   post:
+     summary: Retrieves scatter plot points
+     description: Retrieves scatter plot points of a dataset version
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: versionset-id
+         in: path
+         description: ID of the version set which you neeed to retrieve scatter plot points
+         required: true
+         type: integer
+
+#Retrieving chart sample points of the latest dataset version via REST API
+ /datasets/{dataset-id}/charts:
+   get:
+     summary: Retrieves chart sample points
+     description: Retrieves chart sample points of the latest dataset version via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset of which you need to retrieve chart sample points
+         required: true
+         type: integer
+       - name: features
+         in: query
+         description: comma seperated feature list
+         required: true
+         type: string
+
+#Retrieving chart sample points of a given dataset version for a feature list.
+ /datasets/versions/{versionset-id}/charts?features={feature-list}:
+   get:
+     summary: Retrieves chart sample points of a dataset version
+     description: Retrieves chart sample points of a given data set version for a feature list.
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: versionset-id
+         in: path
+         description: ID of the version set which you need to retrieve chart sample points
+         required: true
+         type: integer
+       - name: feature-list
+         in: path
+         description: comma seperated feature list
+         required: true
+         type: string
+
+#Retrieving cluster points of a dataset for a feature list.
+ /datasets/{dataset-id}/cluster-points?features={feature-list}&no-of-clusters={number-of-clusters}:
+   get:
+     summary: Retrieves cluster points of  a data set
+     description: Retrieves cluster points of a dataset for a feature list via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal server Error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which you need to retrieve cluster points
+         required: true
+         type: integer
+       - name: feature-list
+         in: path
+         description: Feature list of the data set
+         required: true
+         type: string
+       - name: number-of-clusters
+         in: path
+         description: number of clusters of the output
+         required: true
+         type: integer
+
+
+#Retrieving filtered feature names of a dataset
+ /datasets/{dataset-id}/filtered-features?feature-type={feature-type}:
+   get:
+     summary: Retrieves filtered features
+     description: Retrieves filtered feature names of a dataset
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which you need to retrieve filtered feature names
+         required: true
+         type: integer
+       - name: feature-type
+         in: path
+         description: Feature type which you need to retrieve (CATEGORICAL or NUMERICAL)
+         required: true
+         type: string
+
+#Retrieving summarized statistics of a feature in a dataset
+ /datasets/{dataset-id}/stats?feature={feature-name} :
+   get:
+
+     description: Retrieves summarized statistics of a feature in a dataset
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset of which you need to retrieve summarized statistics of a feature
+         required: true
+         type: string
+       - name: feature-name
+         in: path
+         description: Name of the feature which you need to retrieve summarized statistics
+         required: true
+         type: string
+
+#Deleting a data set
+ /dataset/{dataset-id}:
+   delete:
+     summary: Deletes a data set
+     description: Deletes a dataset via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: dataset-id
+         in: path
+         description: ID of the dataset which you need to retrieve filtered feature names
+         required: true
+         type: integer
+
+#Retrieving dataset version via REST API
+ /dataset/versions/{versionset-id}:
+   delete:
+     summary: Deletes a  data set version
+     description: Delete a dataset version of a given dataset ID via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: versionset-id
+         in: path
+         description: ID of the version set which is needed to be deleted
+         required: true
+         type: integer
+
+#Creating a project (with a dataset name) via REST API
+ /projects:
+   post:
+     summary: Creates a Project
+     description: Creates a project (with a dataset name) via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+#Retrieving all projects via REST API
+   get:
+     summary: Retrieves projects
+     description: Retrieves all projects  via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+
+#Retrieving a project via REST API
+ /projects/{project-name}:
+   get:
+     summary: Retrieves a project
+     description: Retrieves a project via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: project-name
+         in: path
+         description: Name of the project of which is needed to be retrieved
+         required: true
+         type: string
+
+#Deleting a project via REST API
+   delete:
+     summary: Deletes a project
+     description: Deletes  a project via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: project-name
+         in: path
+         description: Name of the project of which is needed to be deleted
+         required: true
+         type: string
+
+
+#Retrieving all models of a project via REST API
+ /projects/{project-id}/models:
+   get:
+     summary: Retrieves model of a project
+     description: Retrieves all models of a project via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: project-id
+         in: path
+         description: ID of the project of which you need to retrieve models
+         required: true
+         type: integer
+
+
+#Retrieving all analyses of all  projects via REST API
+ /projects/analyses:
+   get:
+     summary: Retrieves all analyses
+     description: Retrieves all analyses of all projects via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+
+
+#Retrieving all analyses of a  project via REST API
+ /projects/{project-id}/analyses:
+   get:
+     summary: Retrieves all analyses
+     description: Retrieves all analyses of a project via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: project-id
+         in: path
+         description: ID of the project of which you need to retrieve analyses
+         required: true
+         type: integer
+
+#Retrieveing a specific analysis of a project via REST API
+ /projects/{project-id}/analyses/{analysis-name}:
+   get:
+     summary: Retrieves a analysis of a project
+     description: Retrieves a specific analysis of a project via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: project-id
+         in: path
+         description: ID of the project of which you need to retrieve the analysis
+         required: true
+         type: integer
+
+       - name: analysis-name
+         in: path
+         description: name of the analysis of which is needed to be retrieved
+         required: true
+         type: string
+
+
+#Creating an analysis via REST API
+ /analyses:
+   post:
+     description: Creating an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+#Retrieveing all analyses via RESt API
+   get:
+     description: Retrieves all analyses via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+
+#Setting customized features of an analysis via REST API
+ /analyses/{analysis-id}/features:
+   post:
+     summary: Sets customized features of analysis
+     description: Sets customized featurs of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis which you need to add features
+         required: true
+         type: string
+
+#Setting default features as customized features of an analysis via REST API
+ /analyses/{analysis-id}/features/defaults:
+   get:
+     summary: Sets customized features
+     description: Sets default features as customized features of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis to which, you need to load the default features as customized features
+         required: true
+         type: string
+
+#Retrieveing a specific analysis of a project via REST API
+ /analyses/{analysis-id}/summarized-features:
+   get:
+     summary: Retrieves summarized features
+     description: Retrieves summarized features of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which summarized features needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing customized features of an analysis via REST API
+ /analyses/{analysis-id}/customized-features:
+   get:
+     summary: Retrieves customized features
+     description: Retrieves customized features of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which you need to retrieve customized features
+         required: true
+         type: string
+
+
+#Retrieveing configurations of an analysis via REST API
+ /analyses/{analysis-id}/configs:
+   get:
+     summary: Retrieves configurations
+     description: Retrieves configurations of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which you need to retrieve configurations
+         required: true
+         type: string
+
+
+#Retrieveing filtered features of an analysis via REST API
+ /analyses/{analysis-id}/filtered-features?featureType={feature-type}:
+   get:
+     summary: Retrieves filtered features
+     description: Retrieves filtered features of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the filtered features are needed to be retrieved
+         required: true
+         type: string
+       - name: feature-type
+         in: path
+         description: feature type which is needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing features of an analysis via REST API
+ /analyses/{analysis-id}/features:
+   get:
+     summary: Retrieves features
+     description: Retrieves features of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the features are needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing response variables of an analysis via REST API
+ /analyses/{analysis-id}/response-variables:
+   get:
+     summary: Retrieves filtered features
+     description: Retrieves response variables of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the response variables are needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing algorithm name of an analysis via REST API
+ /analyses/{analysis-id}/algorithm-name:
+   get:
+     summary: Retrieves algorithm name
+     description: Retrieves algorithm name of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the algorithm name needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing algorithm type of an analysis via REST API
+ /analyses/{analysis-id}/algorithm-type:
+   get:
+     summary: Retrieves algorithm type
+     description: Retrieves algorithm type of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the algorithm type is needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing train data fraction of an analysis via REST API
+ /analyses/{analysis-id}/train-data-fraction:
+   get:
+     summary: Retrieves train data fraction
+     description: Retrieves train data fraction of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which the train data fraction is needed to be retrieved
+         required: true
+         type: string
+
+#Retrieveing summarized statistics of an analysis via REST API
+ /analyses/{analysis-id}/stats?feature={feature-name}:
+   get:
+     summary: Retrieves summarized statistics
+     description: Retrieves sumarized statistics of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which summarized statistics is needed to be retrieved
+         required: true
+         type: string
+       - name: feature-name
+         in: path
+         description: Name of the feature which you need to retrieve summarized statistics
+         required: true
+         type: string
+
+#Setting configurations of an analysis via REST API
+ /analyses/{analysis-id}/configurations:
+   post:
+     summary: Sets configurations
+     description: Sets configurations of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of wwhich the configurations are needed to be set
+         required: true
+         type: string
+
+#Setting hyper parameters of a selected algorithm via REST API
+ /analyses/{analysis-id}/hyper-params:
+   post:
+     summary: Sets hyper parameters of an algorithm
+     description: Sets hyper parameters of a selected algorithm via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis to which, you need to set hyper parameters for the selected algorithm
+         required: true
+         type: string
+       - name: algorithm-name
+         in: query
+         description: Name of the learning algorithm on which analysis is created
+         required: true
+         type: string
+
+#Retrieving  hyper parameters of an analysis via REST API
+ /analyses/{analysis-id}/hyper-parameters:
+   get:
+     summary: Retrieves  hyper parameters of an analysis
+     description: Retrievess hyper parameters of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which you need to retrieve hyper parameters
+         required: true
+         type: string
+
+#Loading default hyper parameters for an analysis via REST API
+ /analyses/{analysis-id}/hyper-params/defaults:
+   post:
+     summary: Loads default hyper parametrs of an analysis
+     description: Loads default hyper parameters for an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis to which, you need to load hyper parameters
+         required: true
+         type: string
+
+
+
+
+#Retrieving all models of an analysis via REST API
+ /analyses/{analysis-id}/models:
+   get:
+     summary: Retrieves all models of an analysis
+     description: Retrieves all models of an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which you need to retrieve all models
+         required: true
+         type: string
+
+#Deleting an analysis via REST API
+ /analyses/{analysis-id}:
+   delete:
+     summary: Deletes an analysis
+     description: deletes an analysis via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not Found
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: analysis-id
+         in: path
+         description: ID of the analysis of which you need to delete
+         required: true
+         type: string
+
+#Creating a model via REST API
+ /models:
+   post:
+     summary: Creates model
+     description: Creates a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+#Retrieving all models via REST API
+   get:
+     summary: Retrieves models
+     description: Retrieves all models via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+#Adding model storage information via REST API
+ /models/{model-id}/storages:
+   post:
+     summary: Adds model storage information
+     description: Adds model storage information of a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: model-id
+         in: path
+         description:  of the model to which, you need to add storage information.
+         required: true
+         type: string
+
+#Pblishing a model via REST API
+ /models/{model-id}/publish-model:
+   post:
+     summary: Publishes a model
+     description: Publishes a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+
+     parameters:
+       - name: model-id
+         in: path
+         description: ID of the model which you need to publish to WSO2 registry
+         required: true
+         type: string
+
+#Making a prediction using a model via REST API
+ /models/predict-model:
+   post:
+     summary: Makes a prediction
+     description: makes a prediction using a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: formData
+         description: Unique ID of the model
+         required: true
+         type: number
+
+       - name: data-format
+         in: formData
+         description: Data format of the file (CSV or TSV)
+         required: true
+         type: string
+
+       - name: input-stream
+         in: formData
+         description: File input stream generated from the file used for predictions
+         required: false
+         type: file
+
+#Making prediction using a CSV/TSV file via REST API
+ /models/stream-predict-model:
+   post:
+     summary: Predicts using CSV/TSV files
+     description: Makes prediction using a CSV/TSV file via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       400:
+         description: Bad Request
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: formData
+         description: Unique ID of the model
+         required: true
+         type: number
+
+       - name: data-format
+         in: formData
+         description: Data format of the file (CSV or TSV)
+         required: true
+         type: string
+
+       - name: column-header
+         in: formData
+         description: Whether the file contains the column header as the first row (YES or NO)
+         required: false
+         type: string
+
+       - name: input-stream
+         in: formData
+         description: Input stream generated from the file used for predictions
+         required: false
+         type: file
+
+#Predicting a model  via REST API
+ /models/{model-id}/predict-model:
+   post:
+     summary: Predicts a model
+     description: Predicts a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: Unique ID of the model
+         required: true
+         type: string
+
+#Retrieves a model via REST API
+ /models/{model-id}:
+   get:
+     summary: Retrieves model
+     description: Retrieves a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not found
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: Unique name of the model
+         required: true
+         type: string
+
+
+
+#Deleting a model via REST API
+   delete:
+     summary: Deletes a model
+     description: Deletes a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: Unique ID of the model
+         required: true
+         type: string
+
+#Building a model via REST API
+   post:
+     summary: Builds model
+     description: Builds a  model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: ID of the model you want to build
+         required: true
+         type: string
+
+
+#Retrieving summary of a model via REST API
+ /models/{model-id}/summary:
+   get:
+     summary: Retrieves model summary
+     description: Retrieves summary of a model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not found
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: D of the model of which you need to retrieve the summary
+         required: true
+         type: string
+
+
+
+#Exporting a model via REST API
+ /models/{model-id}/export-model:
+   get:
+     summary: Exports model
+     description: Exorts a  model via REST API
+
+     security:
+       - basicAuth: []
+     responses:
+       200:
+         description: ok
+       404:
+         description: Not found
+       500:
+         description: Internal Server error
+     parameters:
+       - name: model-id
+         in: path
+         description: ID of the model of which you need to retrieve the summary
+         required: true
+         type: string
+
+definitions:
+  ApplicationInfo:
+    title: Application info object with basic application details
+    properties:
+      applicationId:
+        type: string
+      name:
+        type: string
+      subscriber:
+        type: string
+      throttlingTier:
+        type: string
+      description:
+        type: string
+      status:
+        type: string
+      groupId:
+        type: string
