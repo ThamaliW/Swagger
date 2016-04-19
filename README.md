@@ -19,8 +19,8 @@
 
 
 Following document discusses implementation details for generating client library using swagger API definition.
-
-Tools:
+</br>
+Tools:</br>
 	Swagger Codegen
 	Swagger Editor
 	Maven mojo plugins
